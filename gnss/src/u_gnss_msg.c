@@ -132,7 +132,7 @@
 /* ----------------------------------------------------------------
  * STATIC VARIABLES
  * -------------------------------------------------------------- */
-
+extern uPortMutexHandle_t gULocationMutex;
 /* ----------------------------------------------------------------
  * STATIC FUNCTIONS
  * -------------------------------------------------------------- */
@@ -215,7 +215,9 @@ static void msgReceiveTask(void *pParam)
                     if (uGnssPrivateMessageIdToPublic(&privateMessageId, &messageId, nmeaId) == 0) {
                         // Got something, with a message ID now in public form;
                         // go through the list of readers looking for those interested
+                        if (gULocationMutex != NULL) {
 
+                                U_PORT_MUTEX_LOCK(gULocationMutex);
                         U_PORT_MUTEX_LOCK(pMsgReceive->readerMutexHandle);
 
                         pReader = pMsgReceive->pReaderList;
@@ -233,6 +235,8 @@ static void msgReceiveTask(void *pParam)
                         }
 
                         U_PORT_MUTEX_UNLOCK(pMsgReceive->readerMutexHandle);
+                        U_PORT_MUTEX_UNLOCK(gULocationMutex);
+                        }
                     }
 
                     // Clear out any remaining data

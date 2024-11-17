@@ -141,9 +141,6 @@ static void gnssPosCallback(uDeviceHandle_t devHandle,
     uLocationSharedFifoEntry_t *pEntry;
     uLocation_t location;
 
-    if (gULocationMutex != NULL) {
-
-        U_PORT_MUTEX_LOCK(gULocationMutex);
 
         pEntry = pULocationSharedRequestPop(U_LOCATION_SHARED_FIFO_GNSS);
         if (pEntry != NULL) {
@@ -185,8 +182,6 @@ static void gnssPosCallback(uDeviceHandle_t devHandle,
             uLocationSharedFifoEntryFree(pEntry);
         }
 
-        U_PORT_MUTEX_UNLOCK(gULocationMutex);
-    }
 }
 
 // Callback for a non-blocking cell locate request.
